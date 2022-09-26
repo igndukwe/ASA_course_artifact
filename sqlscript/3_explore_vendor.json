@@ -5,12 +5,12 @@
 			"name": "nyc_taxi/discovery"
 		},
 		"content": {
-			"query": "USE nyc_taxi_discovery;\n\nSELECT *\n  FROM OPENROWSET(\n      BULK 'vendor_unquoted.csv',\n      DATA_SOURCE = 'nyc_taxi_data_raw',\n      FORMAT = 'CSV',\n      PARSER_VERSION = '2.0',\n      HEADER_ROW = TRUE\n  ) AS vendor;\n\n\nSELECT *\n  FROM OPENROWSET(\n      BULK 'vendor_escaped.csv',\n      DATA_SOURCE = 'nyc_taxi_data_raw',\n      FORMAT = 'CSV',\n      PARSER_VERSION = '2.0',\n      HEADER_ROW = TRUE,\n      ESCAPECHAR = '\\\\'\n  ) AS vendor;\n\nSELECT *\n  FROM OPENROWSET(\n      BULK 'vendor.csv',\n      DATA_SOURCE = 'nyc_taxi_data_raw',\n      FORMAT = 'CSV',\n      PARSER_VERSION = '2.0',\n      HEADER_ROW = TRUE,\n      FIELDQUOTE = '\"'\n  ) AS vendor;\n\n\n",
+			"query": "/*\nIDENTIFYING ESCAPE CHARACTERS\n=============================\n*/\n\n-- 1.) Switch to the right database in the built in serverless pool: nyc_taxi_discovery\nUSE nyc_taxi_discovery;\n\n/*\n-- Create the External Data Source if you have not already done so\nCREATE EXTERNAL DATA SOURCE nyc_taxi_data_raw\nWITH(\n    LOCATION = 'abfss://asa-course-test-adlfs-wsp-cnt@asacourseteststaccdl.dfs.core.windows.net/raw/'\n)\n*/\n\n\n--1.) This query only displays 'Creative Mobile Technologies' instead of 'Creative Mobile Technologies, LLC'\nSELECT *\n  FROM OPENROWSET(\n      BULK 'vendor_unquoted.csv',\n      DATA_SOURCE = 'nyc_taxi_data_raw',\n      FORMAT = 'CSV',\n      PARSER_VERSION = '2.0',\n      HEADER_ROW = TRUE\n  ) AS vendor;\n\n\n-- 2.) To solved this problem, we need to specify escape character inside the text:e.g.,  'Creative Mobile Technologies\\, LLC'\nSELECT *\n  FROM OPENROWSET(\n      BULK 'vendor_escaped.csv',\n      DATA_SOURCE = 'nyc_taxi_data_raw',\n      FORMAT = 'CSV',\n      PARSER_VERSION = '2.0',\n      HEADER_ROW = TRUE,\n      ESCAPECHAR = '\\\\'--spacify your escape character here\n  ) AS vendor;\n\n\n-- 2.) Another way to solved this problem, is to put double quote around the text: e.g.,  \"Creative Mobile Technologies, LLC\"\nSELECT *\n  FROM OPENROWSET(\n      BULK 'vendor.csv',\n      DATA_SOURCE = 'nyc_taxi_data_raw',\n      FORMAT = 'CSV',\n      PARSER_VERSION = '2.0',\n      HEADER_ROW = TRUE,\n      FIELDQUOTE = '\"'\n  ) AS vendor;\n\n\n",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "master",
+				"databaseName": "nyc_taxi_discovery",
 				"poolName": "Built-in"
 			},
 			"resultLimit": 5000
