@@ -5,7 +5,7 @@
 			"name": "nyc_taxi/ldw"
 		},
 		"content": {
-			"query": "USE master\nGO\n\nCREATE DATABASE nyc_taxi_ldw\nGO\n\nALTER DATABASE nyc_taxi_ldw COLLATE Latin1_General_100_BIN2_UTF8\nGO\n\nUSE nyc_taxi_ldw\nGO\n\nCREATE SCHEMA bronze\nGO\n\nCREATE SCHEMA silver\nGO\n\nCREATE SCHEMA gold\nGO\n",
+			"query": "-- we need to be in the master database to create another database\nUSE master\nGO\n\n-- ldw: logical data warehouse\nCREATE DATABASE nyc_taxi_ldw\nGO\n\n-- Alter database to use the UTF-8 collection\nALTER DATABASE nyc_taxi_ldw COLLATE Latin1_General_100_BIN2_UTF8\nGO\n\nUSE nyc_taxi_ldw\nGO\n\n-- Create the gold silver and bronze schemas\nCREATE SCHEMA bronze\nGO\n\nCREATE SCHEMA silver\nGO\n\nCREATE SCHEMA gold\nGO\n",
 			"metadata": {
 				"language": "sql"
 			},
