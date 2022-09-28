@@ -1,7 +1,7 @@
 {
 	"name": "pl_create_silver_taxi_zone",
 	"properties": {
-		"description": "This pipeline uses a delete activity to delete the files in a data lake path and then script activity with embedded query's to recreate external tables along with the files in that folder.",
+		"description": "This pipeline uses a delete activity to delete the taxi zone files in a data lake path and then script activity with embedded query's to recreate taxi zone external tables along with the taxi zone files in that folder.",
 		"activities": [
 			{
 				"name": "Delete Silver Taxi Folder",

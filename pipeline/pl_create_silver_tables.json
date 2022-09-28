@@ -1,7 +1,7 @@
 {
-	"name": "pl_create_silver_taxi_zone_usp",
+	"name": "pl_create_silver_tables",
 	"properties": {
-		"description": "This pipeline uses a delete activity to delete the taxi zone files in a data lake path and then procedure activity to call a user defined stored procedure (usp) to recreate taxi zone external tables along with the taxi zone files in that folder.",
+		"description": "This pipeline uses a delete activity dynamically to delete all the files in a data lake path and then procedure activity to call a user defined stored procedure (usp) to recreate all external tables along with all the files in that folder.",
 		"activities": [
 			{
 				"name": "Delete Silver Taxi Folder",
@@ -17,8 +17,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_silver_taxi_zone",
-						"type": "DatasetReference"
+						"referenceName": "ds_nyc_taxi_dynamic",
+						"type": "DatasetReference",
+						"parameters": {
+							"folder_path_param": {
+								"value": "variables('folder_path_var')",
+								"type": "Expression"
+							}
+						}
 					},
 					"enableLogging": false,
 					"storeSettings": {
@@ -48,7 +54,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[silver].[usp_silver_taxi_zone]"
+					"storedProcedureName": {
+						"value": "@variables('usp_name_var')",
+						"type": "Expression"
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "ls_serverless_sql_pool_db_nyc_taxi_ldw",
@@ -56,8 +65,15 @@
 				}
 			}
 		],
-		"folder": {
-			"name": "old"
+		"variables": {
+			"folder_path_var": {
+				"type": "String",
+				"defaultValue": "silver/taxi_zone"
+			},
+			"usp_name_var": {
+				"type": "String",
+				"defaultValue": "silver.usp_silver_taxi_zone"
+			}
 		},
 		"annotations": []
 	}

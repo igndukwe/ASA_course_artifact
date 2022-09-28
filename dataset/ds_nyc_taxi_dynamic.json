@@ -1,0 +1,29 @@
+{
+	"name": "ds_nyc_taxi_dynamic",
+	"properties": {
+		"description": "This is a dynamic dataset which replaces ds_silver_taxi_zone and aims to reference all the external tables rather than just one external table. Hence we will create a parameter folder_path_param and send the table names as value from the pipeline into the parameter.",
+		"linkedServiceName": {
+			"referenceName": "ls_asacourseteststaccdl",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"folder_path_param": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().folder_path_param",
+					"type": "Expression"
+				},
+				"fileSystem": "nyc-taxi-data"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
