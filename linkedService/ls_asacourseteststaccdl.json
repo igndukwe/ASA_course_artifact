@@ -1,0 +1,15 @@
+{
+	"name": "ls_asacourseteststaccdl",
+	"properties": {
+		"description": "Links to the storage account",
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://asacourseteststaccdl.dfs.core.windows.net/"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
