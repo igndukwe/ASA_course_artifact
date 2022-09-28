@@ -8,6 +8,9 @@
 		"asa-course-test-wsp-WorkspaceDefaultSqlServer_connectionString": {
 			"value": ""
 		},
+		"ls_serverless_sql_pool_db_nyc_taxi_ldw_connectionString": {
+			"value": ""
+		},
 		"asa-course-test-wsp-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://asacourseteststaccdl.dfs.core.windows.net"
 		},
