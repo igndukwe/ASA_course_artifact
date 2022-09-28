@@ -10,6 +10,9 @@
 		},
 		"asa-course-test-wsp-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://asacourseteststaccdl.dfs.core.windows.net"
+		},
+		"ls_asacourseteststaccdl_properties_typeProperties_url": {
+			"value": "https://asacourseteststaccdl.dfs.core.windows.net/"
 		}
 	}
 }
