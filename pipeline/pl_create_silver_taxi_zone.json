@@ -1,7 +1,7 @@
 {
-	"name": "pl_create_silver_taxi_zone_usp",
+	"name": "pl_create_silver_taxi_zone",
 	"properties": {
-		"description": "This pipeline uses a delete activity to delete the files in a data lake path and then procedure activity to call a user defined stored procedure (usp) to recreate external tables along with the files in that folder.",
+		"description": "This pipeline uses a delete activity to delete the files in a data lake path and then script activity with embedded query's to recreate external tables along with the files in that folder.",
 		"activities": [
 			{
 				"name": "Delete Silver Taxi Folder",
@@ -30,7 +30,7 @@
 			},
 			{
 				"name": "Create Silver Taxi Zone",
-				"type": "SqlServerStoredProcedure",
+				"type": "Script",
 				"dependsOn": [
 					{
 						"activity": "Delete Silver Taxi Folder",
@@ -47,15 +47,27 @@
 					"secureInput": false
 				},
 				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[silver].[usp_silver_taxi_zone]"
-				},
 				"linkedServiceName": {
 					"referenceName": "ls_serverless_sql_pool_db_nyc_taxi_ldw",
 					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": "IF OBJECT_ID('silver.taxi_zone') IS NOT NULL\n    DROP EXTERNAL TABLE silver.taxi_zone;"
+						},
+						{
+							"type": "Query",
+							"text": "CREATE EXTERNAL TABLE silver.taxi_zone\n    WITH\n    (\n        DATA_SOURCE = nyc_taxi_src,\n        LOCATION = 'silver/taxi_zone', -- where to dump the data\n        FILE_FORMAT = parquet_file_format\n    )\nAS\nSELECT *\n  FROM bronze.taxi_zone;"
+						}
+					]
 				}
 			}
 		],
+		"folder": {
+			"name": "old"
+		},
 		"annotations": []
 	}
 }
