@@ -1,5 +1,5 @@
 {
-	"name": "7_usp_create_silver_rate_code",
+	"name": "8_usp_create_silver_rate_code",
 	"properties": {
 		"folder": {
 			"name": "nyc_taxi/ldw/usp"
@@ -10,7 +10,7 @@
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "master",
+				"databaseName": "nyc_taxi_ldw",
 				"poolName": "Built-in"
 			},
 			"resultLimit": 5000
