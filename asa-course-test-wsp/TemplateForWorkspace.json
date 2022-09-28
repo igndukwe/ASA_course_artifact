@@ -1093,7 +1093,7 @@
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"description": "This pipeline uses a delete activity to delete the files in a data lake path and then procedure activity to call a user defined stored procedure (usp) to recreate external tables along with the files in that folder.",
+				"description": "This pipeline uses a delete activity to delete the taxi zone files in a data lake path and then procedure activity to call a user defined stored procedure (usp) to recreate taxi zone external tables along with the taxi zone files in that folder.",
 				"activities": [
 					{
 						"name": "Delete Silver Taxi Folder",
@@ -1153,6 +1153,9 @@
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
 				},
+				"folder": {
+					"name": "old"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
@@ -1184,7 +1187,7 @@
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"description": "This pipeline uses a delete activity to delete the files in a data lake path and then script activity with embedded query's to recreate external tables along with the files in that folder.",
+				"description": "This pipeline uses a delete activity to delete the taxi zone files in a data lake path and then script activity with embedded query's to recreate taxi zone external tables along with the taxi zone files in that folder.",
 				"activities": [
 					{
 						"name": "Delete Silver Taxi Folder",
@@ -1260,6 +1263,130 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/ds_silver_taxi_zone')]",
+				"[concat(variables('workspaceId'), '/linkedServices/ls_serverless_sql_pool_db_nyc_taxi_ldw')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_nyc_taxi_dynamic')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "This is a dynamic dataset which replaces ds_silver_taxi_zone and aims to reference all the external tables rather than just one external table. Hence we will create a parameter folder_path_param and send the table names as value from the pipeline into the parameter.",
+				"linkedServiceName": {
+					"referenceName": "ls_asacourseteststaccdl",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folder_path_param": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().folder_path_param",
+							"type": "Expression"
+						},
+						"fileSystem": "nyc-taxi-data"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/ls_asacourseteststaccdl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/pl_create_silver_tables')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "This pipeline uses a delete activity dynamically to delete all the files in a data lake path and then procedure activity to call a user defined stored procedure (usp) to recreate all external tables along with all the files in that folder.",
+				"activities": [
+					{
+						"name": "Delete Silver Taxi Folder",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_nyc_taxi_dynamic",
+								"type": "DatasetReference",
+								"parameters": {
+									"folder_path_param": {
+										"value": "variables('folder_path_var')",
+										"type": "Expression"
+									}
+								}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					},
+					{
+						"name": "Create Silver Taxi Zone",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Delete Silver Taxi Folder",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": {
+								"value": "@variables('usp_name_var')",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_serverless_sql_pool_db_nyc_taxi_ldw",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"folder_path_var": {
+						"type": "String",
+						"defaultValue": "silver/taxi_zone"
+					},
+					"usp_name_var": {
+						"type": "String",
+						"defaultValue": "silver.usp_silver_taxi_zone"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_nyc_taxi_dynamic')]",
 				"[concat(variables('workspaceId'), '/linkedServices/ls_serverless_sql_pool_db_nyc_taxi_ldw')]"
 			]
 		}
