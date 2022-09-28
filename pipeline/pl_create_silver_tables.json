@@ -4,7 +4,7 @@
 		"description": "This pipeline uses a delete activity dynamically to delete all the files in a data lake path and then procedure activity to call a user defined stored procedure (usp) to recreate all external tables along with all the files in that folder.",
 		"activities": [
 			{
-				"name": "ForEach1",
+				"name": "ForEach Folder Path",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [],
