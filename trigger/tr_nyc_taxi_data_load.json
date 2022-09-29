@@ -16,8 +16,8 @@
 			"recurrence": {
 				"frequency": "Minute",
 				"interval": 5,
-				"startTime": "2022-09-29T10:54:00",
-				"endTime": "2022-09-29T00:54:00",
+				"startTime": "2022-09-29T11:59:00",
+				"endTime": "2022-09-30T00:54:00",
 				"timeZone": "New Zealand Standard Time"
 			}
 		}
