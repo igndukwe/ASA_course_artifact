@@ -1,0 +1,11 @@
+{
+	"name": "ls_course_power_bi_wsp",
+	"properties": {
+		"annotations": [],
+		"type": "PowerBIWorkspace",
+		"typeProperties": {
+			"workspaceID": "35d6a190-b1fc-45a6-9834-a02d30573a39",
+			"tenantID": "865c4c90-6099-4d1b-af3d-46fb27d6958e"
+		}
+	}
+}
