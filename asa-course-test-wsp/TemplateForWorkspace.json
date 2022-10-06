@@ -950,6 +950,20 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/ls_course_power_bi_wsp')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "PowerBIWorkspace",
+				"typeProperties": {
+					"workspaceID": "35d6a190-b1fc-45a6-9834-a02d30573a39",
+					"tenantID": "865c4c90-6099-4d1b-af3d-46fb27d6958e"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/ls_serverless_sql_pool_db_nyc_taxi_ldw')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -2061,7 +2075,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "546aa539-8dfd-4cdb-93be-61af6e7b5103"
+						"spark.autotune.trackingId": "25bad1cf-17d0-437a-b7fc-1c290291d2b3"
 					}
 				},
 				"metadata": {
@@ -2086,8 +2100,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
